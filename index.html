@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   
+
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-content: center;
+        }
+        .container h1, canvas {
+            display: flex;
+            justify-content: center;
+        }
+        #selectMode {
+            width: 150px;
+        }
+
+        .box{
+          display: flex;
+          width:100%;
+        }
+        #left {
+         
+          width: 200px;
+          margin: 4px;
+          padding: 8px;
+          display: flex;
+          align-items: center;
+          justify-content:end;
+          
+        }
+        #right {
+          width: 200px;
+          margin: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        input, select {
+            width: 140px;
+           
+            box-sizing: border-box;
+        }
+
+        
+
+        
+        div {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+
+        .loader {
+        border: 5px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 5px solid #555;
+        width: 50px;
+        height: 50px;
+        -webkit-animation: spin 2s linear infinite; /* Safari */
+        animation: spin 1s linear infinite;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+        }
+
+        .spinnerContainer {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            align-items: center;
+            
+            justify-content: center;
+            height: 500px;
+        }
+        
+    </style>
+    
+    
+</head>
+<body>
+   
+    <div id="spinner" class="spinnerContainer" style="width:100%">
+        <div class="loader"></div>
+        <p>loading data from remote server....</p>
+    </div>
+    
+    <div id="main" class="container">
+        <h1> general test ground</h1>
+        <button id="selectMode"></button>
+        <input type="date" id="dateOfInterest">
+        
+        
+        <canvas id="meteoMatics" style="width:100%;max-width:1300px"></canvas>
+
+        <div id="dash">
+            <div class="box">
+                <div id="left">number of panels installed : </div>
+                <div id="right"><input type="number" id="panelCount" step="100000"  min="0" max="3000000"/></div>
+                <div id="right">overall daily : <span style="margin-left: 10px" id="result"></span></div>
+            </div>
+        
+            <div class="box">
+                <div id="left">panel power [W] : </div>
+                <div id="right"><input type="number" id="panelPower" step="100"  min="200" max="1000"/></div>
+                <div id="right">windspeed   : <span style="margin-left: 10px"><input type="checkbox" id="checkBoxWindspeed" style="width: 70px"/></span></div>
+            </div>
+        
+            <div class="box">
+                <div id="left">number of windturbines : </div>
+                <div id="right"><input type="number" id="turbineCount" step="1000"  min="0" max="300000"/></div>
+                <div id="right">cloud cover : <span style="margin-left: 10px"><input type="checkbox" id="checkBoxCloudCover" style="width: 60px"/></span></div>
+            </div>
+        
+            <div class="box">
+                <div id="left">type of windturbines : </div>
+                <div id="right">
+                    <select name="turbines" id="turbineType">
+                        <option value="vestasV40">Vestas V42 600/42</option>
+                        <option value="vestasV100">Vestas V100 1800</option>
+                    </select>
+                </div>
+                <div id="right">sun azimut angle : <span style="margin-left: 10px"><input type="checkbox" id="checkBoxSunPosition" style="width: 60px"/></span></div>
+            </div>
+        </div>
+
+    </div>
+   
+   
+   
+    <script src="./dist/main.js" defer></script>
+    <script>
+    
+    </script>
+
+   
+    
+</body>
+</html>
