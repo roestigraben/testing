@@ -306,13 +306,13 @@ export const config100 = {
                 borderWidth: 2,
                 fill: false,
                 borderColor: 'rgb(100, 100, 100)',
-                backgroundColor: 'rgb(10, 10, 100, 0.1)',
+                backgroundColor: 'rgb(10, 10, 100, 1.0)',
                 tension: 0.3,
                 parsing: {
                     xAxisKey: 'time',
                     yAxisKey: 'windspeedMeteomatics'
                 },
-                // yAxisID: 'auxiliary',
+                yAxisID: 'auxiliary',
                 hidden: true
             },
             {
@@ -352,10 +352,10 @@ export const config100 = {
                 stack: 'xxxxx',
                 label: 'base',
                 data: null, //dataSet,
-                borderWidth: 6,
+                borderWidth: 1,
                 fill: true,
-                borderColor: 'rgb(100, 100, 100)',
-                backgroundColor: 'rgb(100, 200, 250, 0.2)',
+                borderColor: 'rgb(100, 100, 100, 0.0)',
+                backgroundColor: 'rgb(100, 200, 250, 0.0)',
                 tension: 0.2,
                 parsing: {
                     xAxisKey: 'time',
@@ -402,6 +402,10 @@ export const config100 = {
         options: {
             animation: false,
             plugins: {
+                htmlLegend: {
+                    // ID of the container to put the legend in
+                    containerID: 'legend-container',
+                  },
                 legend: {
                     display: false
                 },
@@ -424,6 +428,34 @@ export const config100 = {
                         display: true
                         }
                 },
+                auxiliary: {
+                    display: false,
+                    beginAtZero: true,
+                    //min: 5000,
+                    //max: 8000,
+                    title: {
+                        text: 'windspeed [m/s]',
+                        display: true
+                        },
+                    position: 'right',
+                    grid: {
+                        drawOnChartArea: false
+                    },
+                    ticks: {
+                        callback: function(value:any) {
+                            return  `${value}`
+                            /* if (winspeedScale) {
+                                return  `${value}`
+                            } 
+                            if (cloudCoverScale){
+                                return `${value} %`
+                            } 
+                            if (sunPositionScale) {
+                                return  `${value}`
+                            } */
+                        }
+                    }
+                },
                 
                 x: {
                     title: {
@@ -433,6 +465,7 @@ export const config100 = {
                 }
             }
         }
+        // plugins: [htmlLegendPlugin],    // https://www.chartjs.org/docs/latest/samples/legend/html.html
 }
 
 export const config2:any = {
