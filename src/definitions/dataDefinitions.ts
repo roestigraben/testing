@@ -41,7 +41,10 @@ interface dataSet {
     solarRadiation?: number,
     solarpowerSim?: number
     windpower?: number,
-    windPowerSim?: number
+    windPowerSim?: number,
+    diffNuclearRenewablePos?: number,
+    diffNuclearRenewableNeg?: number,
+    base?: number,
 }
 
 export { RowData, ValueData, coordinatesData, datesData, dataSet, EData }

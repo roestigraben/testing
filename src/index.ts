@@ -1,11 +1,11 @@
-import axios from 'axios'
+// import axios from 'axios'
 import { Chart, ChartType } from 'chart.js/auto';
 // import { QueryGL, Area, DocumentType, ProcessType, PsrType } from "./entsoe/src/query";
-import flatpickr from 'flatpickr';
-import SunCalc from 'suncalc'
-import { getMeteoMaticsData, getEntsoeData, getSimData, displayData, reFormatDates } from './MeteoMatics/helper'
+// import flatpickr from 'flatpickr';
+// import SunCalc from 'suncalc'
+import { getMeteoMaticsData, getEntsoeData, getSimData, displayData, reFormatDates, calculateSolar, calculateWind, config100, config2} from './MeteoMatics/helper'
 import { RowData, ValueData, coordinatesData, datesData, dataSet } from './definitions/dataDefinitions'
-import { QueryGL, Area, DocumentType, ProcessType, PsrType } from "./entsoe/src/query";
+// import { QueryGL, Area, DocumentType, ProcessType, PsrType } from "./entsoe/src/query";
 
 /////////////////////////////////////////////////////////////////////////
 
@@ -14,11 +14,12 @@ import { QueryGL, Area, DocumentType, ProcessType, PsrType } from "./entsoe/src/
 /////////////////////////////////////////////////////////////////////////
 // control block
 
+// spinner
 const spinner = document.getElementById('spinner')
 const main = document.getElementById('main')
 main.style.display = 'none'
 
-// the div is used to selectively display the control panel
+// div used to selectively display the scenario view
 const dash = document.getElementById('dash')
 dash.style.display = "none";
 // select Button between views
@@ -32,14 +33,187 @@ btn.addEventListener('click', function selectMode() {
         primaryConfig = false
         btn.innerHTML = "Select Status view"
         dash.style.display = "block";
-        displayData(dataSet, primaryConfig)
+        //config100.data.datasets[0].hidden = true
+        //config100.data.datasets[1].hidden = true
+        config100.data.datasets[2].hidden = true
+        config100.data.datasets[3].hidden = true
+        config100.data.datasets[4].hidden = true
+        config100.data.datasets[5].hidden = true
+
+        // config100.data.datasets[6].hidden = false
+        config100.data.datasets[7].hidden = false
+        config100.data.datasets[8].hidden = false
+        config100.data.datasets[9].hidden = false
+        config100.data.datasets[10].hidden = false
+        config100.data.datasets[11].hidden = false
+        
+        meteoMatics.update()
+        //displayData(dataSet, primaryConfig)
     } else { 
         primaryConfig = true
         btn.innerHTML = "Select scenario view"
         dash.style.display = "none";
-        displayData(dataSet, primaryConfig)
+
+        //config100.data.datasets[0].hidden = false
+        //config100.data.datasets[1].hidden = false
+        config100.data.datasets[2].hidden = false
+        config100.data.datasets[3].hidden = false
+        config100.data.datasets[4].hidden = false
+        config100.data.datasets[5].hidden = false
+
+        //config100.data.datasets[6].hidden = true
+        config100.data.datasets[7].hidden = true
+        config100.data.datasets[8].hidden = true
+        config100.data.datasets[9].hidden = true
+        config100.data.datasets[10].hidden = true
+        config100.data.datasets[11].hidden = true
+
+        meteoMatics.update()
+        //displayData(dataSet, primaryConfig)
     }
 });
+
+// scenario input fields
+// Default settings
+var panelCountValue:number = 900000 // in units
+var panelPowerValue:number = 500  // in Watts
+var conversionFactor = 0.00001 // solar power from W to MW
+var turbineCountValue:number = 5000 // in units
+var turbineTypeValue = 'vestasV40' // type of turbine
+var updateDisplayOnly = false  // variable to avoid deletion of Chart Object each time an imput is changed
+
+
+var solarpower: number[] = Array(24).fill(0)
+var windpower: number[] = Array(24).fill(0)
+var windSpeed: number[] = Array(24).fill(0)
+var diffNuclearRenewablePos: number[] = Array(24).fill(0)
+var diffNuclearRenewableNeg: number[] = Array(24).fill(0)
+var base: number[] = Array(24).fill(0)
+
+// dashboard controls
+const turbineCount = document.getElementById('turbineCount') as HTMLInputElement;
+turbineCount.value = turbineCountValue.toString()
+const turbineType = document.getElementById('turbineType') as HTMLInputElement;
+turbineType.value = turbineTypeValue
+const panelCount = document.getElementById('panelCount') as HTMLInputElement;
+panelCount.value = panelCountValue.toString()
+const panelPower = document.getElementById('panelPower') as HTMLInputElement;
+panelPower.value = panelPowerValue.toString()
+const winspeedCheckBox = document.getElementById('checkBoxWindspeed') as HTMLInputElement;
+winspeedCheckBox.checked = false
+const cloudCoverCheckBox = document.getElementById('checkBoxCloudCover') as HTMLInputElement;
+cloudCoverCheckBox.checked = false
+const sunPositionCheckBox = document.getElementById('checkBoxSunPosition') as HTMLInputElement;
+sunPositionCheckBox.checked = false
+
+// Input Handlers
+const inputHandlerCount = async function(e:any) {
+    panelCountValue = parseInt(e.target.value);
+    console.log('number of panels  : ', panelCountValue)
+    config100.options.animation = true
+
+    solarpower =  await calculateSolar(panelCountValue, panelPowerValue, conversionFactor)
+    windpower =  await calculateWind(turbineCountValue, turbineTypeValue, windSpeed)
+    dataSet.forEach((item, idx) => {
+        item.solarpowerSim = solarpower[idx]
+        
+        
+        var renewable = Math.round(solarpower[idx] + windpower[idx])
+
+        if(renewable < item.nuclear) {
+            base[idx] = renewable
+            item.diffNuclearRenewablePos = 0
+            item.diffNuclearRenewableNeg = item.nuclear - renewable
+            
+        } else {
+            base[idx] = item.nuclear
+            item.diffNuclearRenewablePos = renewable - item.nuclear
+            item.diffNuclearRenewableNeg = 0
+            
+        }
+        
+        
+    })
+
+    //config100.data.datasets[6].borderColor = dataSet.map((value) => value.diffNuclearRenewable < 0 ? 'red' : 'green');
+    //config100.data.datasets[6].backgroundColor = dataSet.map((value) => value.diffNuclearRenewable < 0 ? 'red' : 'green');
+    meteoMatics.update()
+    config100.options.animation = false
+}
+const inputHandlerPower = async function(e:any) {
+    panelPowerValue = parseInt(e.target.value)
+    console.log('power :  ', panelPowerValue)  
+    config100.options.animation = true
+
+    solarpower =  await calculateSolar(panelCountValue, panelPowerValue, conversionFactor)
+    dataSet.forEach((item, idx) => {
+        item.solarpowerSim = solarpower[idx]
+        //item.diffNuclearRenewable = (solarpower[idx] +  windpower[idx]) - item.nuclear
+    })
+
+    //config100.data.datasets[6].borderColor = dataSet.map((value) => value.diffNuclearRenewable < 0 ? 'red' : 'green');
+    //config100.data.datasets[6].backgroundColor = dataSet.map((value) => value.diffNuclearRenewable < 0 ? 'red' : 'green');
+    meteoMatics.update()
+    config100.options.animation = false
+}
+const inputHandlerTurbine = async function(e:any) {
+    turbineCountValue = e.target.value
+    console.log('number of turbines :  ', turbineCountValue); 
+    config100.options.animation = true
+
+    windpower =  await calculateWind(turbineCountValue, turbineTypeValue, windSpeed)
+    dataSet.forEach((item, idx) => {
+        item.windPowerSim = windpower[idx]
+        console.log(windpower[idx], solarpower[idx], item.nuclear)
+        //item.diffNuclearRenewable = (solarpower[idx] +  windpower[idx]) - item.nuclear
+    })
+    console.log(dataSet)
+
+    //config100.data.datasets[6].borderColor = dataSet.map((value) => value.diffNuclearRenewable < 0 ? 'red' : 'green');
+    //config100.data.datasets[6].backgroundColor = dataSet.map((value) => value.diffNuclearRenewable < 0 ? 'red' : 'green');
+    meteoMatics.update()
+    config100.options.animation = false
+}
+const inputHandlerTurbineType = async function(e:any) {
+    turbineTypeValue = e.target.value
+    console.log('type of turbines :  ', turbineTypeValue);
+    config100.options.animation = true
+    windpower =  await calculateWind(turbineCountValue, turbineTypeValue, windSpeed)
+    dataSet.forEach((item, idx) => {
+        item.windPowerSim = windpower[idx]
+        // item.diffNuclearRenewable = (solarpower[idx] +  windpower[idx]) - item.nuclear
+    })
+    //config100.data.datasets[6].borderColor = dataSet.map((value) => value.diffNuclearRenewable < 0 ? 'red' : 'green');
+    //config100.data.datasets[6].backgroundColor = dataSet.map((value) => value.diffNuclearRenewable < 0 ? 'red' : 'green');
+    meteoMatics.update()
+    config100.options.animation = false
+}
+const inputHandlerWindspeed = function(e:any) {
+    console.log('winspeed :  ', e.target.checked);
+    // simmulate radio button functionality by disabling all other checkboxes
+    cloudCoverCheckBox.checked = false
+    sunPositionCheckBox.checked = false 
+}
+const inputHandlerCloudCover = function(e:any) {
+    winspeedCheckBox.checked = false
+    sunPositionCheckBox.checked = false
+    console.log('cloud cover :  ', e.target.checked);
+}
+const inputHandlerSunPosition = function(e:any) {
+    cloudCoverCheckBox.checked = false
+    winspeedCheckBox.checked = false
+    console.log('cloud cover :  ', e.target.checked);
+}
+
+panelCount.addEventListener('input', inputHandlerCount);
+panelPower.addEventListener('input', inputHandlerPower);
+turbineCount.addEventListener('input', inputHandlerTurbine);
+turbineType.addEventListener('input', inputHandlerTurbineType);
+winspeedCheckBox.addEventListener('input', inputHandlerWindspeed);
+cloudCoverCheckBox.addEventListener('input', inputHandlerCloudCover);
+sunPositionCheckBox.addEventListener('input', inputHandlerSunPosition);
+
+
 
 
 /////////////////////////////////////////////////////////////////////////
@@ -65,15 +239,24 @@ console.log(' all possible date formats    :   ', datesBack)
 dateOfInterest.value = datesBack[4].toString() 
 // change handler
 dateOfInterest.addEventListener('change', async function(){
+    spinner.style.display = 'flex'
+    main.style.display = 'none'
     // console.log(dateOfInterest.value)
     // console.log(reFormatDates(dateOfInterest.value))
     datesBack = reFormatDates(dateOfInterest.value)
-    console.log(' all possible date formats    :   ', datesBack)
+    // console.log(' all possible date formats    :   ', datesBack)
     xStartTime = datesBack[0]
     xEndTime = datesBack[1]
     startTime = datesBack[2]
     endTime = datesBack[3]
+
+
     dataSet = await getData()
+
+    spinner.style.display = 'none'
+    main.style.display = 'flex'
+    
+    // meteoMatics.update()
     displayData(dataSet, primaryConfig)
 })
 
@@ -87,52 +270,113 @@ var dataSet:dataSet[] = []
 
 let getData = async() => {
 
-    dataSet = []
-    // get Entsoe Data
-    // console.log('Entsoedata startTime        ', startTime)
-    var result = await getEntsoeData(startTime,endTime)
-    console.log('Entsoedata         ', result[0], result[1], result[2], result[3], result[3].length)
-
-    // get Meteomatics Data
-    // console.log('MeteoMatics startTimex        ', xStartTime)
-    // meteoMaticsData = await getMeteoMaticsData(datesBack[5])
-    // console.log('data after API fetch      ',meteoMaticsData)
-
-    // get simulated data
-    const simulatedData = await getSimData()
-    // console.log(simulatedData)
-
-    // consolidate various sources into single formatted Data Set
+    var localStoreData = JSON.parse(localStorage.getItem(datesBack[4].toString()))
     
-    for (let idx = 0; idx < 24; idx++) {
-        var dataObj = {
-            'time': idx.toString(), 
-            'forecast': 0, 
-            'actual': result[3][0].values[idx].actual,
-            'nuclear': result[3][4].values[idx].actual,
-            'hydroReservoir': result[3][3].values[idx].actual,
-            'hydroRiver': result[3][2].values[idx].actual,
-            'hydroPumped': result[3][1].values[idx].actual,
-            'cloudCover': 0,
-            'windspeedMeteomatics': 0,//meteoMaticsData.data[0].coordinates[0].dates[idx].value,
-            'windspeedWindfinder': 10 + Math.random()*100,
-            'solarpower': result[3][5].values[idx].actual,
-            'solarRadiation': 0,
-            'solarpowerSim': 0,
-            'windpower': 0,
-            'windPowerSim': 0
-            
+    if (!localStoreData) {
+
+        dataSet = []
+        // get Entsoe Data
+        // console.log('Entsoedata startTime        ', startTime)
+        console.log('fetch started')
+        var result = await getEntsoeData(startTime,endTime)
+        // console.log('Entsoedata         ', result[0], result[1], result[2], result[3], result[3].length)
+        console.log('fetch completed')
+
+        // get Meteomatics Data
+        // console.log('MeteoMatics startTimex        ', xStartTime)
+        meteoMaticsData = await getMeteoMaticsData(datesBack[5])
+        // console.log('data after API fetch      ',meteoMaticsData)
+
+        // get simulated data
+        // var sim = await getSimData(result[3][4].values, solarpower, windpower)
+        // console.log(sim)
+       meteoMaticsData.data[0].coordinates[0].dates.forEach((item,idx) => {
+        windSpeed[idx] = item.value
+       })
+        // get solar power and win power
+        solarpower =  await calculateSolar(panelCountValue, panelPowerValue, conversionFactor)
+        windpower =  await calculateWind(turbineCountValue, turbineTypeValue, windSpeed)
+
+        diffNuclearRenewablePos.forEach((item,idx) => {
+            var renewable = Math.round(solarpower[idx] + windpower[idx])
+
+            if(renewable < result[3][4].values[idx].actual) {
+                base[idx] = renewable
+                diffNuclearRenewablePos[idx] = 0
+                diffNuclearRenewableNeg[idx] = result[3][4].values[idx].actual - renewable
+              
+            } else {
+                base[idx] = result[3][4].values[idx].actual
+                diffNuclearRenewablePos[idx] = renewable - result[3][4].values[idx].actual
+                diffNuclearRenewableNeg[idx] = 0
+               
+            }
+        })
+       
+        // consolidate various sources into single formatted Data Set
+        
+        for (let idx = 0; idx < 24; idx++) {
+            var dataObj = {
+                'time': idx.toString(), 
+                'forecast': 0, 
+                'actual': result[3][0].values[idx].actual,
+                'nuclear': result[3][4].values[idx].actual,
+                'hydroReservoir': result[3][3].values[idx].actual,
+                'hydroRiver': result[3][2].values[idx].actual,
+                'hydroPumped': result[3][1].values[idx].actual,
+                'cloudCover': 0,
+                'windspeedMeteomatics': windSpeed[idx], //meteoMaticsData.data[0].coordinates[0].dates[idx].value,
+                'windspeedWindfinder': 10 + Math.random()*100,
+                'solarpower': result[3][5].values[idx].actual,
+                'solarRadiation': 0,
+                'solarpowerSim': solarpower[idx],
+                'windpower': 0,
+                'windPowerSim': windpower[idx],
+                'diffNuclearRenewablePos': diffNuclearRenewablePos[idx], //(solarpower[idx] +  windpower[idx]) - result[3][4].values[idx].actual, //diffNuclearRenewable[idx]
+                'diffNuclearRenewableNeg': diffNuclearRenewableNeg[idx],
+                'base': base[idx]
+            }
+            dataSet.push(dataObj)
         }
-        dataSet.push(dataObj)
+        console.log('dataSet construction finished    ', dataSet)
+        localStorage.setItem(datesBack[4].toString(), JSON.stringify(dataSet))
+        
+
+        return dataSet
+    } else {
+    
+       return localStoreData 
     }
-    console.log('dataSet construction finished    ', dataSet)
-    return dataSet
 }
 
+//////////////////////////////////////////////////////////////////////
+// get the data
 dataSet = await getData()
+
 spinner.style.display = 'none'
 main.style.display = 'flex'
-displayData(dataSet, primaryConfig)
+console.log(dataSet)
+
+// const colours = dataSet.map((value) => value.diffNuclearRenewable < 0 ? 'red' : 'green');
+config100.data.labels = dataSet.map(row => row.time)
+//config100.data.datasets[6].borderColor = colours
+//config100.data.datasets[6].backgroundColor = colours
+
+config100.data.datasets[6].hidden = true
+config100.data.datasets[7].hidden = true
+config100.data.datasets[8].hidden = true
+config100.data.datasets[9].hidden = true
+config100.data.datasets[10].hidden = true
+config100.data.datasets[11].hidden = true
+
+config100.data.datasets.forEach(set => {
+    set.data = dataSet
+})
+   
+const meteoMatics = new Chart('meteoMatics', primaryConfig ? config100 : config2)
+meteoMatics.update()
+
+// displayData(dataSet, primaryConfig)
 
 
 
