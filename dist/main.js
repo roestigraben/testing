@@ -2499,14 +2499,14 @@ const config100 = {
                 containerID: 'legend-container',
             },
             legend: {
-                display: false
+                display: true
             },
             tooltip: {
                 enabled: true
             },
             title: {
                 display: true,
-                text: 'Wind Speed'
+                text: 'Power Consumption'
             }
         },
         aspectRatio: 2,
