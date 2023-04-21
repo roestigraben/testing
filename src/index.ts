@@ -258,15 +258,15 @@ let getData = async() => {
 
         // get Meteomatics Data
         // console.log('MeteoMatics startTimex        ', xStartTime)
-        meteoMaticsData = await getMeteoMaticsData(datesBack[5])
+    /////// meteoMaticsData = await getMeteoMaticsData(datesBack[5])
         // console.log('data after API fetch      ',meteoMaticsData)
 
         // get simulated data
         // var sim = await getSimData(result[3][4].values, solarpower, windpower)
         // console.log(sim)
-       meteoMaticsData.data[0].coordinates[0].dates.forEach((item,idx) => {
-        windSpeed[idx] = item.value
-       })
+    /* meteoMaticsData.data[0].coordinates[0].dates.forEach((item,idx) => {
+    windSpeed[idx] = item.value
+    }) */
         // get solar power and win power
         solarpower =  await calculateSolar(panelCountValue, panelPowerValue, conversionFactor)
         windpower =  await calculateWind(turbineCountValue, turbineTypeValue, windSpeed)

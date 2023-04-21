@@ -4608,14 +4608,14 @@ let getData = async () => {
         console.log('fetch completed');
         // get Meteomatics Data
         // console.log('MeteoMatics startTimex        ', xStartTime)
-        meteoMaticsData = await (0,_MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.getMeteoMaticsData)(datesBack[5]);
+        /////// meteoMaticsData = await getMeteoMaticsData(datesBack[5])
         // console.log('data after API fetch      ',meteoMaticsData)
         // get simulated data
         // var sim = await getSimData(result[3][4].values, solarpower, windpower)
         // console.log(sim)
-        meteoMaticsData.data[0].coordinates[0].dates.forEach((item, idx) => {
-            windSpeed[idx] = item.value;
-        });
+        /* meteoMaticsData.data[0].coordinates[0].dates.forEach((item,idx) => {
+        windSpeed[idx] = item.value
+        }) */
         // get solar power and win power
         solarpower = await (0,_MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.calculateSolar)(panelCountValue, panelPowerValue, conversionFactor);
         windpower = await (0,_MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.calculateWind)(turbineCountValue, turbineTypeValue, windSpeed);
