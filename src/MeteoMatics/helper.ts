@@ -100,7 +100,7 @@ export async function getMeteoMaticsData(date): Promise<any> {
         
         const authHeader = `Basic ${base64Encode(`${username}:${password}`)}`;
 
-        await fetch(url, {headers: { 'Authorization' : authHeader}})
+        await fetch(url, {headers: { 'Authorization' : authHeader, mode: 'no-cors'}})
         .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
