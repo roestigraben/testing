@@ -2205,7 +2205,7 @@ async function getMeteoMaticsData(date) {
     const username = "peter_hirt";
     const password = "GoWui5ZjN2Kj";
     const authHeader = `Basic ${base64Encode(`${username}:${password}`)}`;
-    await fetch(url, { headers: { 'Authorization': authHeader, mode: 'no-cors' } })
+    await fetch(url, { headers: { 'Authorization': authHeader } })
         .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
