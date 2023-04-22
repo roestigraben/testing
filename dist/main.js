@@ -2119,6 +2119,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "calculateSolar": () => (/* binding */ calculateSolar),
 /* harmony export */   "calculateWind": () => (/* binding */ calculateWind),
 /* harmony export */   "config100": () => (/* binding */ config100),
+/* harmony export */   "config101": () => (/* binding */ config101),
 /* harmony export */   "config2": () => (/* binding */ config2),
 /* harmony export */   "displayData": () => (/* binding */ displayData),
 /* harmony export */   "getEntsoeData": () => (/* binding */ getEntsoeData),
@@ -2376,13 +2377,281 @@ const config100 = {
             },
             {
                 type: 'line',
-                stack: 'x',
+                stack: 'xx',
                 label: 'Solar',
                 data: null,
                 borderWidth: 2,
                 fill: true,
                 borderColor: 'rgb(100, 100, 100)',
-                backgroundColor: 'rgb(10, 100, 100, 0.3)',
+                backgroundColor: 'rgb(255, 255, 10, 0.3)',
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'solarpower'
+                },
+                hidden: false
+            },
+            // new sets
+            {
+                type: 'line',
+                label: 'auxiliary',
+                data: null,
+                borderWidth: 2,
+                fill: false,
+                borderColor: 'rgb(100, 100, 100)',
+                backgroundColor: 'rgb(10, 10, 100, 1.0)',
+                tension: 0.3,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'windspeedMeteomatics'
+                },
+                yAxisID: 'auxiliary',
+                hidden: true
+            },
+            {
+                type: 'line',
+                stack: 'x',
+                label: 'solar power simulated',
+                data: null,
+                borderWidth: 2,
+                fill: true,
+                borderColor: 'rgb(100, 100, 100)',
+                backgroundColor: 'rgb(150, 150, 250, 0.3)',
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'solarpowerSim'
+                },
+                hidden: true
+            },
+            {
+                type: 'line',
+                stack: 'x',
+                label: 'wind power simulated',
+                data: null,
+                borderWidth: 2,
+                fill: true,
+                borderColor: 'rgb(100, 100, 100)',
+                backgroundColor: 'rgb(100, 200, 250, 0.3)',
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'windPowerSim'
+                },
+                hidden: true
+            },
+            {
+                type: 'line',
+                stack: 'xxxxx',
+                label: 'base',
+                data: null,
+                borderWidth: 2,
+                fill: false,
+                borderColor: 'rgb(100, 100, 100, 0.3)',
+                backgroundColor: 'rgb(100, 100, 100, 0.3)',
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'base'
+                },
+                hidden: true
+            },
+            {
+                type: 'bar',
+                stack: 'xxxxx',
+                barThickness: 16,
+                label: 'difference',
+                data: null,
+                borderWidth: 2,
+                fill: true,
+                borderColor: 'rgb(10, 10, 10 0.8)',
+                backgroundColor: 'rgb(10 255, 10, 0.8)',
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'diffNuclearRenewablePos'
+                },
+                hidden: true
+            },
+            {
+                type: 'bar',
+                stack: 'xxxxx',
+                barThickness: 16,
+                label: 'difference',
+                data: null,
+                borderWidth: 2,
+                fill: true,
+                borderColor: 'rgb(10, 10, 10, 0.8)',
+                backgroundColor: 'rgb(255, 10, 10, 0.8)',
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'diffNuclearRenewableNeg'
+                },
+                hidden: true
+            },
+        ]
+    },
+    options: {
+        animation: false,
+        plugins: {
+            htmlLegend: {
+                // ID of the container to put the legend in
+                containerID: 'legend-container',
+            },
+            legend: {
+                display: true
+            },
+            tooltip: {
+                enabled: true
+            },
+            title: {
+                display: true,
+                text: 'Power Consumption'
+            }
+        },
+        aspectRatio: 2,
+        scales: {
+            y: {
+                beginAtZero: true,
+                //min: 5000,
+                //max: 8000,
+                title: {
+                    text: 'Power [MW]',
+                    display: true
+                }
+            },
+            auxiliary: {
+                display: false,
+                beginAtZero: true,
+                //min: 5000,
+                //max: 8000,
+                title: {
+                    text: 'windspeed [m/s]',
+                    display: true
+                },
+                position: 'right',
+                grid: {
+                    drawOnChartArea: false
+                },
+                ticks: {
+                    callback: function (value) {
+                        return `${value}`;
+                        /* if (winspeedScale) {
+                            return  `${value}`
+                        }
+                        if (cloudCoverScale){
+                            return `${value} %`
+                        }
+                        if (sunPositionScale) {
+                            return  `${value}`
+                        } */
+                    }
+                }
+            },
+            x: {
+                title: {
+                    text: 'Time of day',
+                    display: true
+                }
+            }
+        }
+    }
+    // plugins: [htmlLegendPlugin],    // https://www.chartjs.org/docs/latest/samples/legend/html.html
+};
+const config101 = {
+    data: {
+        // labels: dataSet.data[0].coordinates[0].dates.map(row => row.date.slice(11, -4)),
+        labels: null,
+        datasets: [
+            {
+                type: 'line',
+                label: 'total',
+                data: null,
+                borderWidth: 5,
+                fill: true,
+                borderColor: 'rgb(100, 100, 100)',
+                backgroundColor: 'rgb(100, 10, 100, 0.1)',
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'actual'
+                },
+                hidden: false
+            },
+            {
+                type: 'line',
+                stack: 'xx',
+                label: 'nuclear',
+                data: null,
+                borderWidth: 2,
+                fill: true,
+                borderColor: 'rgb(100, 100, 100)',
+                backgroundColor: 'rgb(150, 220, 150, 0.4)',
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'nuclear'
+                },
+                hidden: false
+            },
+            {
+                type: 'line',
+                stack: 'xx',
+                label: 'Hydro Pumped Storage',
+                data: null,
+                borderWidth: 2,
+                fill: true,
+                borderColor: 'rgb(100, 100, 100)',
+                backgroundColor: 'rgb(100, 200, 200, 1.0)',
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'hydroPumped'
+                },
+                hidden: false
+            },
+            {
+                type: 'line',
+                stack: 'xx',
+                label: 'Hydro Run-of-river and poundage',
+                data: null,
+                borderWidth: 2,
+                fill: true,
+                borderColor: 'rgb(100, 100, 100)',
+                backgroundColor: 'rgb(200, 150, 200, 1.0)',
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'hydroRiver'
+                },
+                hidden: false
+            },
+            {
+                type: 'line',
+                stack: 'xx',
+                label: 'Hydro Water Reservoir',
+                data: null,
+                borderWidth: 2,
+                fill: true,
+                borderColor: 'rgb(100, 100, 100)',
+                backgroundColor: 'rgb(150, 120, 150, 0.3)',
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'hydroReservoir'
+                },
+                hidden: false
+            },
+            {
+                type: 'line',
+                stack: 'xx',
+                label: 'Solar',
+                data: null,
+                borderWidth: 2,
+                fill: true,
+                borderColor: 'rgb(100, 100, 100)',
+                backgroundColor: 'rgb(255, 255, 10, 0.3)',
                 tension: 0.2,
                 parsing: {
                     xAxisKey: 'time',
@@ -4418,39 +4687,24 @@ btn.addEventListener('click', function selectMode() {
         primaryConfig = false;
         btn.innerHTML = "Select Status view";
         dash.style.display = "block";
-        //config100.data.datasets[0].hidden = true
-        //config100.data.datasets[1].hidden = true
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[2].hidden = true;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[3].hidden = true;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[4].hidden = true;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[5].hidden = true;
-        // config100.data.datasets[6].hidden = false
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[7].hidden = false;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[8].hidden = false;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[9].hidden = false;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[10].hidden = false;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[11].hidden = false;
-        recalculateDerivedData(dataSet);
+        config1.data.datasets.splice(2);
+        config1.data.datasets.push(...datasetsConfig100.slice(6, 12));
+        // recalculateDerivedData(dataSet)
         meteoMatics.update();
+        meteoMatics.update();
+        // setTimeout(() => meteoMatics.update(), 100);
     }
     else {
         primaryConfig = true;
         btn.innerHTML = "Select scenario view";
         dash.style.display = "none";
-        //config100.data.datasets[0].hidden = false
-        //config100.data.datasets[1].hidden = false
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[2].hidden = false;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[3].hidden = false;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[4].hidden = false;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[5].hidden = false;
-        meteoMatics.data.datasets[6].hidden = true;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[7].hidden = true;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[8].hidden = true;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[9].hidden = true;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[10].hidden = true;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[11].hidden = true;
-        recalculateDerivedData(dataSet);
+        config1.data.datasets = datasetsConfig100.slice(0, 6);
+        // console.log(config1.data.datasets)
+        // recalculateDerivedData(dataSet)
         meteoMatics.update();
+        meteoMatics.update();
+        // setTimeout(() => meteoMatics.update(), 100);
+        //meteoMatics.update()  
     }
 });
 // scenario input fields
@@ -4486,49 +4740,49 @@ sunPositionCheckBox.checked = false;
 // Input Handlers
 const inputHandlerCount = async function (e) {
     panelCountValue = parseInt(e.target.value);
-    console.log('number of panels  : ', panelCountValue);
-    _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.options.animation = true;
+    // console.log('number of panels  : ', panelCountValue)
+    config1.options.animation = true;
     recalculateDerivedData(dataSet);
     meteoMatics.update();
-    _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.options.animation = false;
+    config1.options.animation = false;
 };
 const inputHandlerPower = async function (e) {
     panelPowerValue = parseInt(e.target.value);
-    console.log('power :  ', panelPowerValue);
-    _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.options.animation = true;
+    // console.log('power :  ', panelPowerValue)  
+    config1.options.animation = true;
     recalculateDerivedData(dataSet);
     meteoMatics.update();
-    _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.options.animation = false;
+    config1.options.animation = false;
 };
 const inputHandlerTurbine = async function (e) {
     turbineCountValue = e.target.value;
-    console.log('number of turbines :  ', turbineCountValue);
-    _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.options.animation = true;
+    // console.log('number of turbines :  ', turbineCountValue); 
+    config1.options.animation = true;
     recalculateDerivedData(dataSet);
     meteoMatics.update();
-    _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.options.animation = false;
+    config1.options.animation = false;
 };
 const inputHandlerTurbineType = async function (e) {
     turbineTypeValue = e.target.value;
-    console.log('type of turbines :  ', turbineTypeValue);
-    _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.options.animation = true;
+    // console.log('type of turbines :  ', turbineTypeValue);
+    config1.options.animation = true;
     recalculateDerivedData(dataSet);
     meteoMatics.update();
-    _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.options.animation = false;
+    config1.options.animation = false;
 };
 const inputHandlerWindspeed = function (e) {
     console.log('winspeed :  ', e.target.checked);
     // simmulate radio button functionality by disabling all other checkboxes
     if (e.target.checked === true) {
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.options.scales.auxiliary.title.text = 'windspeed [m/s]';
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.options.scales.auxiliary.display = true;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[6].parsing.yAxisKey = 'windspeed';
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[6].hidden = false;
+        config1.options.scales.auxiliary.title.text = 'windspeed [m/s]';
+        config1.options.scales.auxiliary.display = true;
+        config1.data.datasets[2].parsing.yAxisKey = 'windspeedMeteomatics';
+        config1.data.datasets[2].hidden = false;
         // winspeedScale = true
     }
     else {
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.options.scales.auxiliary.display = false;
-        _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[6].hidden = true;
+        config1.options.scales.auxiliary.display = false;
+        config1.data.datasets[2].hidden = true;
         // winspeedScale = false
     }
     meteoMatics.update();
@@ -4587,8 +4841,11 @@ dateOfInterest.addEventListener('change', async function () {
     dataSet = await getData();
     spinner.style.display = 'none';
     main.style.display = 'flex';
-    // meteoMatics.update()
-    (0,_MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.displayData)(dataSet, primaryConfig);
+    config1.data.datasets.forEach(set => {
+        set.data = dataSet;
+    });
+    meteoMatics.update();
+    // displayData(dataSet, primaryConfig)
 });
 /////////////////////////////////////////////////////////////////////////
 // get data
@@ -4608,14 +4865,14 @@ let getData = async () => {
         console.log('fetch completed');
         // get Meteomatics Data
         // console.log('MeteoMatics startTimex        ', xStartTime)
-        /////// meteoMaticsData = await getMeteoMaticsData(datesBack[5])
+        meteoMaticsData = await (0,_MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.getMeteoMaticsData)(datesBack[5]);
         // console.log('data after API fetch      ',meteoMaticsData)
         // get simulated data
         // var sim = await getSimData(result[3][4].values, solarpower, windpower)
         // console.log(sim)
-        /* meteoMaticsData.data[0].coordinates[0].dates.forEach((item,idx) => {
-        windSpeed[idx] = item.value
-        }) */
+        meteoMaticsData.data[0].coordinates[0].dates.forEach((item, idx) => {
+            windSpeed[idx] = item.value;
+        });
         // get solar power and win power
         solarpower = await (0,_MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.calculateSolar)(panelCountValue, panelPowerValue, conversionFactor);
         windpower = await (0,_MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.calculateWind)(turbineCountValue, turbineTypeValue, windSpeed);
@@ -4728,19 +4985,286 @@ recalculateDerivedData(dataSet);
 spinner.style.display = 'none';
 main.style.display = 'flex';
 console.log(dataSet);
-_MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.labels = dataSet.map(row => row.time);
-_MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[6].hidden = true;
-_MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[7].hidden = true;
-_MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[8].hidden = true;
-_MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[9].hidden = true;
-_MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[10].hidden = true;
-_MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets[11].hidden = true;
-_MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100.data.datasets.forEach(set => {
-    set.data = dataSet;
-});
-const meteoMatics = new chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart('meteoMatics', primaryConfig ? _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config100 : _MeteoMatics_helper__WEBPACK_IMPORTED_MODULE_1__.config2);
+/////////////////////////////
+const datasetsConfig100 = [
+    {
+        type: 'line',
+        label: 'total',
+        data: dataSet,
+        borderWidth: 5,
+        fill: true,
+        borderColor: 'rgb(100, 100, 100)',
+        backgroundColor: 'rgb(100, 10, 100, 0.1)',
+        tension: 0.2,
+        parsing: {
+            xAxisKey: 'time',
+            yAxisKey: 'actual'
+        },
+        hidden: false
+    },
+    {
+        type: 'line',
+        stack: 'xx',
+        label: 'nuclear',
+        data: dataSet,
+        borderWidth: 2,
+        fill: true,
+        borderColor: 'rgb(100, 100, 100)',
+        backgroundColor: 'rgb(150, 220, 150, 0.4)',
+        tension: 0.2,
+        parsing: {
+            xAxisKey: 'time',
+            yAxisKey: 'nuclear'
+        },
+        hidden: false
+    },
+    {
+        type: 'line',
+        stack: 'xx',
+        label: 'Hydro Pumped Storage',
+        data: dataSet,
+        borderWidth: 2,
+        fill: true,
+        borderColor: 'rgb(100, 100, 100)',
+        backgroundColor: 'rgb(100, 200, 200, 1.0)',
+        tension: 0.2,
+        parsing: {
+            xAxisKey: 'time',
+            yAxisKey: 'hydroPumped'
+        },
+        hidden: false
+    },
+    {
+        type: 'line',
+        stack: 'xx',
+        label: 'Hydro Run-of-river and poundage',
+        data: dataSet,
+        borderWidth: 2,
+        fill: true,
+        borderColor: 'rgb(100, 100, 100)',
+        backgroundColor: 'rgb(200, 150, 200, 1.0)',
+        tension: 0.2,
+        parsing: {
+            xAxisKey: 'time',
+            yAxisKey: 'hydroRiver'
+        },
+        hidden: false
+    },
+    {
+        type: 'line',
+        stack: 'xx',
+        label: 'Hydro Water Reservoir',
+        data: dataSet,
+        borderWidth: 2,
+        fill: true,
+        borderColor: 'rgb(100, 100, 100)',
+        backgroundColor: 'rgb(150, 120, 150, 0.3)',
+        tension: 0.2,
+        parsing: {
+            xAxisKey: 'time',
+            yAxisKey: 'hydroReservoir'
+        },
+        hidden: false
+    },
+    {
+        type: 'line',
+        stack: 'xx',
+        label: 'Solar',
+        data: dataSet,
+        borderWidth: 2,
+        fill: true,
+        borderColor: 'rgb(100, 100, 100)',
+        backgroundColor: 'rgb(255, 255, 10, 0.3)',
+        tension: 0.2,
+        parsing: {
+            xAxisKey: 'time',
+            yAxisKey: 'solarpower'
+        },
+        hidden: false
+    },
+    {
+        type: 'line',
+        label: 'wind speed',
+        data: dataSet,
+        borderWidth: 7,
+        fill: false,
+        borderColor: 'rgb(250, 100, 100)',
+        backgroundColor: 'rgb(10, 10, 100, 1.0)',
+        tension: 0.3,
+        parsing: {
+            xAxisKey: 'time',
+            yAxisKey: 'windspeedMeteomatics'
+        },
+        yAxisID: 'auxiliary',
+        hidden: true,
+        display: false
+    },
+    {
+        type: 'line',
+        stack: 'x',
+        label: 'solar power simulated',
+        data: dataSet,
+        borderWidth: 2,
+        fill: true,
+        borderColor: 'rgb(100, 100, 100)',
+        backgroundColor: 'rgb(150, 150, 250, 0.3)',
+        tension: 0.2,
+        parsing: {
+            xAxisKey: 'time',
+            yAxisKey: 'solarpowerSim'
+        },
+        hidden: false
+    },
+    {
+        type: 'line',
+        stack: 'x',
+        label: 'wind power simulated',
+        data: dataSet,
+        borderWidth: 2,
+        fill: true,
+        borderColor: 'rgb(100, 100, 100)',
+        backgroundColor: 'rgb(100, 200, 250, 0.3)',
+        tension: 0.2,
+        parsing: {
+            xAxisKey: 'time',
+            yAxisKey: 'windPowerSim'
+        },
+        hidden: false
+    },
+    {
+        type: 'line',
+        stack: 'xxxxx',
+        label: 'base',
+        data: dataSet,
+        borderWidth: 2,
+        fill: false,
+        borderColor: 'rgb(100, 100, 100, 0.3)',
+        backgroundColor: 'rgb(100, 100, 100, 0.3)',
+        tension: 0.2,
+        parsing: {
+            xAxisKey: 'time',
+            yAxisKey: 'base'
+        },
+        hidden: false
+    },
+    {
+        type: 'bar',
+        stack: 'xxxxx',
+        barThickness: 16,
+        label: 'difference',
+        data: dataSet,
+        borderWidth: 2,
+        fill: true,
+        borderColor: 'rgb(10, 10, 10 0.8)',
+        backgroundColor: 'rgb(10 255, 10, 0.8)',
+        tension: 0.2,
+        parsing: {
+            xAxisKey: 'time',
+            yAxisKey: 'diffNuclearRenewablePos'
+        },
+        hidden: false
+    },
+    {
+        type: 'bar',
+        stack: 'xxxxx',
+        barThickness: 16,
+        label: 'difference',
+        data: dataSet,
+        borderWidth: 2,
+        fill: true,
+        borderColor: 'rgb(10, 10, 10, 0.8)',
+        backgroundColor: 'rgb(255, 10, 10, 0.8)',
+        tension: 0.2,
+        parsing: {
+            xAxisKey: 'time',
+            yAxisKey: 'diffNuclearRenewableNeg'
+        },
+        hidden: false
+    },
+];
+const config1 = {
+    data: {
+        // labels: dataSet.data[0].coordinates[0].dates.map(row => row.date.slice(11, -4)),
+        labels: null,
+        datasets: []
+    },
+    options: {
+        animation: false,
+        plugins: {
+            htmlLegend: {
+                // ID of the container to put the legend in
+                containerID: 'legend-container',
+            },
+            legend: {
+                display: true
+            },
+            tooltip: {
+                enabled: true
+            },
+            title: {
+                display: true,
+                text: 'Power Consumption'
+            }
+        },
+        aspectRatio: 2,
+        scales: {
+            y: {
+                beginAtZero: true,
+                //min: 5000,
+                //max: 8000,
+                title: {
+                    text: 'Power [MW]',
+                    display: true
+                }
+            },
+            auxiliary: {
+                display: false,
+                beginAtZero: true,
+                //min: 5000,
+                //max: 8000,
+                title: {
+                    text: 'windspeed [m/s]',
+                    display: true
+                },
+                position: 'right',
+                grid: {
+                    drawOnChartArea: false
+                },
+                ticks: {
+                    callback: function (value) {
+                        return `${value}`;
+                        /* if (winspeedScale) {
+                            return  `${value}`
+                        }
+                        if (cloudCoverScale){
+                            return `${value} %`
+                        }
+                        if (sunPositionScale) {
+                            return  `${value}`
+                        } */
+                    }
+                }
+            },
+            x: {
+                title: {
+                    text: 'Time of day',
+                    display: true
+                }
+            }
+        }
+    }
+    // plugins: [htmlLegendPlugin],    // https://www.chartjs.org/docs/latest/samples/legend/html.html
+};
+config1.data.labels = dataSet.map(row => row.time);
+config1.data.datasets = datasetsConfig100.slice(0, 6);
+console.log(datasetsConfig100.slice(0, 6));
+console.log(datasetsConfig100.slice(0, 6));
+console.log(config1.data.datasets);
+const meteoMatics = new chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart('meteoMatics', config1); // primaryConfig ? config100 : config101)
+/* config100.data.datasets.forEach(set => {
+    set.data = dataSet
+}) */
 meteoMatics.update();
-// displayData(dataSet, primaryConfig)
 // side project with SunCalc
 // I can get sunset and sunrise out of it
 /* var times = SunCalc.getTimes(new Date(), 47.1, 7.0);

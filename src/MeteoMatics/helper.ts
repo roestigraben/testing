@@ -195,7 +195,7 @@ export function reFormatDates(yesterday) {
     return [xStartTime, xEndTime, startTime, endTime, yesterdayShort, constructedDate]
 }
 
-export const config100 = {
+export const config100:any = {
     data: {
         // labels: dataSet.data[0].coordinates[0].dates.map(row => row.date.slice(11, -4)),
         labels: null, //dataSet.time,
@@ -283,13 +283,286 @@ export const config100 = {
                 },
                 {
                     type: 'line',
-                    stack: 'x',
+                    stack: 'xx',
                     label: 'Solar',
                     data: null, //dataSet,
                     borderWidth: 2,
                     fill: true,
                     borderColor: 'rgb(100, 100, 100)',
-                    backgroundColor: 'rgb(10, 100, 100, 0.3)',
+                    backgroundColor: 'rgb(255, 255, 10, 0.3)',
+                    tension: 0.2,
+                    parsing: {
+                        xAxisKey: 'time',
+                        yAxisKey: 'solarpower'
+                    },
+                    hidden: false
+                },
+                // new sets
+            
+            {
+                type: 'line',
+                label: 'auxiliary',
+                data: null, //dataSet,
+                borderWidth: 2,
+                fill: false,
+                borderColor: 'rgb(100, 100, 100)',
+                backgroundColor: 'rgb(10, 10, 100, 1.0)',
+                tension: 0.3,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'windspeedMeteomatics'
+                },
+                yAxisID: 'auxiliary',
+                hidden: true
+            },
+            {
+                type: 'line',
+                stack: 'x',
+                label: 'solar power simulated',
+                data: null, // dataSet,
+                borderWidth: 2,
+                fill: true,
+                borderColor: 'rgb(100, 100, 100)',
+                backgroundColor: 'rgb(150, 150, 250, 0.3)',
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'solarpowerSim'
+                },
+                hidden: true
+            }, 
+            {
+                type: 'line',
+                stack: 'x',
+                label: 'wind power simulated',
+                data: null, //dataSet,
+                borderWidth: 2,
+                fill: true,
+                borderColor: 'rgb(100, 100, 100)',
+                backgroundColor: 'rgb(100, 200, 250, 0.3)',
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'windPowerSim'
+                },
+                hidden: true
+            }, 
+            {
+                type: 'line',
+                stack: 'xxxxx',
+                label: 'base',
+                data: null, //dataSet,
+                borderWidth: 2,
+                fill: false,
+                borderColor: 'rgb(100, 100, 100, 0.3)',
+                backgroundColor: 'rgb(100, 100, 100, 0.3)',
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'base'
+                },
+                hidden: true
+            }, 
+            {
+                type: 'bar',
+                stack: 'xxxxx',
+                barThickness: 16,
+                label: 'difference',
+                data: null, //dataSet,
+                borderWidth: 2,
+                fill: true,
+                borderColor: 'rgb(10, 10, 10 0.8)', //colours,
+                backgroundColor: 'rgb(10 255, 10, 0.8)', //null, //colours,
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'diffNuclearRenewablePos'
+                },
+                hidden: true
+            }, 
+            {
+                type: 'bar',
+                stack: 'xxxxx',
+                barThickness: 16,
+                label: 'difference',
+                data: null, //dataSet,
+                borderWidth: 2,
+                fill: true,
+                borderColor: 'rgb(10, 10, 10, 0.8)', //colours,
+                backgroundColor: 'rgb(255, 10, 10, 0.8)', //null, //colours,
+                tension: 0.2,
+                parsing: {
+                    xAxisKey: 'time',
+                    yAxisKey: 'diffNuclearRenewableNeg'
+                },
+                hidden: true
+            },  
+            ]
+        },
+        options: {
+            animation: false,
+            plugins: {
+                htmlLegend: {
+                    // ID of the container to put the legend in
+                    containerID: 'legend-container',
+                  },
+                legend: {
+                    display: true
+                },
+                tooltip: {
+                    enabled: true
+                },
+                title: {
+                    display: true,
+                    text: 'Power Consumption' 
+                }
+            },
+            aspectRatio: 2,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    //min: 5000,
+                    //max: 8000,
+                    title: {
+                        text: 'Power [MW]',
+                        display: true
+                        }
+                },
+                auxiliary: {
+                    display: false,
+                    beginAtZero: true,
+                    //min: 5000,
+                    //max: 8000,
+                    title: {
+                        text: 'windspeed [m/s]',
+                        display: true
+                        },
+                    position: 'right',
+                    grid: {
+                        drawOnChartArea: false
+                    },
+                    ticks: {
+                        callback: function(value:any) {
+                            return  `${value}`
+                            /* if (winspeedScale) {
+                                return  `${value}`
+                            } 
+                            if (cloudCoverScale){
+                                return `${value} %`
+                            } 
+                            if (sunPositionScale) {
+                                return  `${value}`
+                            } */
+                        }
+                    }
+                },
+                
+                x: {
+                    title: {
+                        text: 'Time of day',
+                        display: true
+                    }
+                }
+            }
+        }
+        // plugins: [htmlLegendPlugin],    // https://www.chartjs.org/docs/latest/samples/legend/html.html
+}
+
+export const config101:any = {
+    data: {
+        // labels: dataSet.data[0].coordinates[0].dates.map(row => row.date.slice(11, -4)),
+        labels: null, //dataSet.time,
+        datasets: [
+            
+              
+                {
+                    type: 'line',
+                    label: 'total',
+                    data: null, //dataSet,
+                    borderWidth: 5,
+                    fill: true,
+                    borderColor: 'rgb(100, 100, 100)',
+                    backgroundColor: 'rgb(100, 10, 100, 0.1)',
+                    tension: 0.2,
+                    parsing: {
+                        xAxisKey: 'time',
+                        yAxisKey: 'actual'
+                    },
+                    hidden: false
+                },  
+                {
+                    type: 'line',
+                    stack: 'xx',
+                    label: 'nuclear',
+                    data: null, // dataSet,
+                    borderWidth: 2,
+                    fill: true,
+                    borderColor: 'rgb(100, 100, 100)',
+                    backgroundColor: 'rgb(150, 220, 150, 0.4)',
+                    tension: 0.2,
+                    parsing: {
+                        xAxisKey: 'time',
+                        yAxisKey: 'nuclear'
+                    },
+                    hidden: false
+                },  
+                {
+                    type: 'line',
+                    stack: 'xx',
+                    label: 'Hydro Pumped Storage',
+                    data: null, //dataSet,
+                    borderWidth: 2,
+                    fill: true,
+                    borderColor: 'rgb(100, 100, 100)',
+                    backgroundColor: 'rgb(100, 200, 200, 1.0)',
+                    tension: 0.2,
+                    parsing: {
+                        xAxisKey: 'time',
+                        yAxisKey: 'hydroPumped'
+                    },
+                    hidden: false
+                },
+                {
+                    type: 'line',
+                    stack: 'xx',
+                    label: 'Hydro Run-of-river and poundage',
+                    data: null, //dataSet,
+                    borderWidth: 2,
+                    fill: true,
+                    borderColor: 'rgb(100, 100, 100)',
+                    backgroundColor: 'rgb(200, 150, 200, 1.0)',
+                    tension: 0.2,
+                    parsing: {
+                        xAxisKey: 'time',
+                        yAxisKey: 'hydroRiver'
+                    },
+                    hidden: false
+                },
+                {
+                    type: 'line',
+                    stack: 'xx',
+                    label: 'Hydro Water Reservoir',
+                    data: null, //dataSet,
+                    borderWidth: 2,
+                    fill: true,
+                    borderColor: 'rgb(100, 100, 100)',
+                    backgroundColor: 'rgb(150, 120, 150, 0.3)',
+                    tension: 0.2,
+                    parsing: {
+                        xAxisKey: 'time',
+                        yAxisKey: 'hydroReservoir'
+                    },
+                    hidden: false
+                },
+                {
+                    type: 'line',
+                    stack: 'xx',
+                    label: 'Solar',
+                    data: null, //dataSet,
+                    borderWidth: 2,
+                    fill: true,
+                    borderColor: 'rgb(100, 100, 100)',
+                    backgroundColor: 'rgb(255, 255, 10, 0.3)',
                     tension: 0.2,
                     parsing: {
                         xAxisKey: 'time',
