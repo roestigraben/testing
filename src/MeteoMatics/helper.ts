@@ -96,7 +96,7 @@ export async function getMeteoMaticsData(date): Promise<any> {
         
         const url = "https://api.meteomatics.com/" + date + "ZP1D:PT60M/wind_speed_10m:ms/47.1330,7.0594/json"
         const username = "peter_hirt"
-        const password = "GoWui5ZjN2Kj"
+        const password = "......."
         
         const authHeader = `Basic ${base64Encode(`${username}:${password}`)}`;
 
