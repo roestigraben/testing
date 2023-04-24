@@ -5,7 +5,7 @@ import { QueryGL, Area, DocumentType, ProcessType, PsrType } from "../entsoe/src
 var entsoeData:EData[] = []
 export async function getEntsoeData(startTime, endTime): Promise<any> {
     // console.log(startTime, endTime)
-    const resultTotalLoad = await QueryGL('102f171b-9352-466b-9e71-5783f324afb5',{
+    const resultTotalLoad = await QueryGL('.................',{
         documentType: DocumentType("System total load"),        // A71 - Generation forecast
         processType: ProcessType("Realised"),         // A01 - Day ahead
         outDomain: Area("Switzerland (CH)"),   
